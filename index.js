@@ -20,6 +20,8 @@ app.get('/', function(req, res) {
 
 });
 
+var port = process.env.PORT || 4000;
+
 function removeDuplicatesArray(arr) {
     var tempArr = [];
     for (var i = 0; i < arr.length; i++) {
@@ -70,4 +72,4 @@ io.on('connection', (socket) => {
     });
   });
 
-server.listen(3000);
+server.listen(port);
