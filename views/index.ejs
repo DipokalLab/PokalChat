@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta charset="utf-8">
+
+  <title>채팅</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100|Noto+Sans+KR&display=swap" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+
+
+</head>
+
+<body id="page-top">
+    <header class="bg-primary text-center py-5 mb-4">
+      <div class="container">
+        <h1 class="font-weight-light text-white"><b id="name"></b></h1>
+        <h4 id="c" class="text-white"></h4>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row">
+        <!-- Team Member 1 -->
+        <div class="col-xl-12 col-md-12 mb-12 ">
+          <div class="card border-0 shadow text-dark">
+            <div class="card-body ">
+              <div id="messages" class="cololl" style="overflow: scroll; overflow-x:hidden; height: 300px;">
+
+              </div>
+              <form action="" ><input type="text" id="m" class="cololl form-control " placeholder="채팅"></form>
+
+            </div>
+          </div>
+        </div>
+    
+    </div>
+
+
+  <!-- Bootstrap core JavaScript -->
+  <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+  <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+  <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+
+function random() {
+    var ranNum = Math.floor(Math.random()*(99999-11111+1)) + 11111;
+    return ranNum;
+}
+var name = "G"+random();
+$('#name').text(name);
+
+    $(() => {
+      const socket = io();
+      $('form').submit(() => {
+        socket.emit('chat', $('#m').val(), name);
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat', (msg, name) => {
+        $('#messages').append($("<div class='en'>").text(msg));
+        $("#messages").scrollTop($("#messages")[0].scrollHeight);
+
+      });
+      socket.on('count', (c) => {
+        $('#c').text(c+"명 접속중");
+      });
+    });
+  </script>
+
+</body>
+
+</html>
