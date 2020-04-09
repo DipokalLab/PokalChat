@@ -50,7 +50,9 @@
           <div class="card border-0 shadow text-dark text-center">
             <div class="card-body ">
 
-              Developer: DipokalHHJ
+              Developer: DipokalHHJ <br>
+              <a data-toggle="modal" href="#myModal">설정</a>
+
             </div>
           </div>
 
@@ -58,6 +60,32 @@
     
     </div>
 
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">설정</h4>
+          </div>
+          <div class="modal-body">
+            <p id="info"></p>
+              <div class="form-group">
+                <label for="exampleInputEmail1">닉네임 변경</label>
+                <input type="text" class="form-control" id="nick" placeholder="닉네임">
+                <br>
+                <button class="btn btn-success" onclick="cnick()">설정 저장</button>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="dinfo()">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  
+  
 
   <!-- Bootstrap core JavaScript -->
   <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
@@ -71,6 +99,20 @@ function random() {
     var ranNum = Math.floor(Math.random()*(99999-11111+1)) + 11111;
     return ranNum;
 }
+
+
+function cnick() {
+    var nick = $('#nick').val();
+    name = nick;
+    $('#name').text(name);
+    $('#info').text("저장됨");
+
+}
+function dinfo() {
+  $('#info').text("");
+
+}
+
 var name = "G"+random();
 $('#name').text(name);
 
