@@ -32,7 +32,7 @@ var c = 0;
 io.on('connection', (socket) => {
     console.log('connected');
     c = c+1;
-    io.emit('chat', "새로운 사용자가 입장했습니다", "userName");
+    io.emit('chat', "유저입장", "userName");
     io.emit('count', c);
 
     socket.on('chat', (msg, userName) => {
@@ -41,7 +41,12 @@ io.on('connection', (socket) => {
         io.emit('user', user);
 
         if (msg !== '') {
-            io.emit('chat', userName+": "+msg, userName);
+            if (msg.length === 4) {
+                if (userName.length < 6) {
+                    io.emit('chat', userName+": "+msg, userName);
+    
+                }
+            }
         }
     });
     socket.on('disconnect', () => {
