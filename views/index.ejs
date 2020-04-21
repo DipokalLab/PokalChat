@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <meta charset="utf-8">
 
-  <title>채팅</title>
+  <title>포워드! : 네글자요</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
@@ -25,8 +25,10 @@
 <body id="page-top">
     <header class="bg-primary text-center py-5 mb-4">
       <div class="container">
-        <h1 class="font-weight-light text-white"><b id="name"></b></h1>
-        <h4 id="c" class="text-white"></h4>
+        <h1 class="font-weight-light text-white">포워드!</h1>
+        <h4 class="text-white"><b id="name"></b> | <b id="c"></b>
+      </h4>        
+
       </div>
     </header>
     
@@ -40,7 +42,7 @@
               <div id="messages" class="cololl" style="overflow: scroll; overflow-x:hidden; overflow-y:auto; height: 300px;">
 
               </div>
-              <form action="" ><input type="text" id="m" class="cololl form-control " placeholder="채팅"></form>
+              <form action="" ><input type="text" id="m" class="cololl form-control text-warning" onkeyup ="textmax()" placeholder="채팅"></form>
 
             </div>
           </div>
@@ -51,6 +53,8 @@
             <div class="card-body ">
 
               Developer: DipokalHHJ <br>
+              한글, 영어 상관없이 4글자로만 입력할 수 있습니다. <br>
+
               <a data-toggle="modal" href="#myModal">설정</a>
 
             </div>
@@ -71,7 +75,7 @@
           <div class="modal-body">
             <p id="info"></p>
               <div class="form-group">
-                <label for="exampleInputEmail1">닉네임 변경</label>
+                <label for="exampleInputEmail1">닉네임을 변경해요 오글자가 최대에요</label>
                 <input type="text" class="form-control" id="nick" placeholder="닉네임">
                 <br>
                 <button class="btn btn-success" onclick="cnick()">설정 저장</button>
@@ -96,16 +100,34 @@
   <script>
 
 function random() {
-    var ranNum = Math.floor(Math.random()*(99999-11111+1)) + 11111;
+    var ranNum = Math.floor(Math.random()*(9999-1111+1)) + 1111;
     return ranNum;
 }
 
+function textmax() {
+  if ($('#m').val().length === 4) {
+    $("#m").attr('class','cololl form-control text-primary');
+
+        } else {
+          $("#m").attr('class','cololl form-control text-danger');
+
+        }
+}
+
+
 
 function cnick() {
-    var nick = $('#nick').val();
+  var nick = $('#nick').val();
+
+  if (nick.length < 6) {
     name = nick;
     $('#name').text(name);
-    $('#info').text("저장됨");
+    $('#info').text("저장됨!");
+        } else {
+          $('#info').text("저장실패 5글자가 최대에요");
+
+        }
+
 
 }
 function dinfo() {
@@ -119,9 +141,14 @@ $('#name').text(name);
     $(() => {
       const socket = io();
       $('form').submit(() => {
-        socket.emit('chat', $('#m').val(), name);
-        $('#m').val('');
-        return false;
+        if ($('#m').val().length === 4) {
+          socket.emit('chat', $('#m').val(), name);
+          $('#m').val('');
+          return false;
+        } else {
+          return false;
+
+        }
       });
       socket.on('chat', (msg, name) => {
         $('#messages').append($("<div class='en'>").text(msg));
