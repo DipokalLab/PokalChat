@@ -41,12 +41,7 @@ io.on('connection', (socket) => {
         io.emit('user', user);
 
         if (msg !== '') {
-            if (msg.length === 4) {
-                if (userName.length < 6) {
-                    io.emit('chat', userName+": "+msg, userName);
-    
-                }
-            }
+            io.emit('chat', userName+": "+msg, userName);
         }
     });
     socket.on('disconnect', () => {
