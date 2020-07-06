@@ -42,7 +42,7 @@
               <div id="messages" class="cololl" style="overflow: scroll; overflow-x:hidden; overflow-y:auto; height: 300px;">
 
               </div>
-              <form action="" ><input type="text" id="m" class="cololl form-control"  placeholder="채팅"></form>
+              <form action="" ><input type="text" id="m" class="cololl form-control"  placeholder="채팅"> <hr><input type="file" id="upload" /></form>
 
             </div>
           </div>
@@ -95,6 +95,9 @@
   <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="/siofu/client.js"></script>
+
+
   <script>
 
 function random() {
@@ -110,8 +113,13 @@ function cnick() {
   var nick = $('#nick').val();
 
     name = nick;
-    $('#name').text(name);
+    if (name.length <= 7) {
+      $('#name').text(name);
     $('#info').text("저장됨!");
+    } else {
+    $('#info').text("닉네임은 7글자가 최대입니다.");
+    }
+
 
 }
 function dinfo() {
@@ -124,6 +132,13 @@ $('#name').text(name);
 
     $(() => {
       const socket = io();
+      let siofu = new SocketIOFileUpload( socket );
+      siofu.listenOnInput( document.getElementById( "upload" ) );
+
+      siofu.addEventListener("complete", function(event) {
+          //alert( "파일명 : " + event.file.name );
+      });
+
       $('form').submit(() => {
           socket.emit('chat', $('#m').val(), name);
           $('#m').val('');
@@ -132,7 +147,10 @@ $('#name').text(name);
       socket.on('chat', (msg, name) => {
         $('#messages').append($("<div class='en'>").text(msg));
         $("#messages").scrollTop($("#messages")[0].scrollHeight);
-
+      });
+      socket.on('file', (file) => {
+        $('#messages').append(`<img src="${file}" height='190'><br>`);
+        $("#messages").scrollTop($("#messages")[0].scrollHeight);
       });
       socket.on('count', (c) => {
         $('#c').text(c+"명 접속중");
