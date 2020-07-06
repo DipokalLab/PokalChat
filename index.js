@@ -3,6 +3,8 @@ var http = require('http');
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+const socketUpload = require( "socketio-file-upload" );
+
 
 
 //헤더보안
@@ -14,6 +16,9 @@ app.set('view engine','ejs');
 //view 를 views 디렉토리로 설정
 app.set('views','./views');
 app.use(express.static('pub'));
+app.use('/file',express.static('file'));
+
+app.use(socketUpload.router);
 
 app.get('/', function(req, res) {
     res.render('./index');
@@ -35,13 +40,44 @@ io.on('connection', (socket) => {
     io.emit('chat', "유저입장", "userName");
     io.emit('count', c);
 
+    let uploader = new socketUpload();
+
+    // @breif 업로드 경로를 지정
+    uploader.dir = "./file";
+    uploader.listen( socket );
+
+
+    uploader.on("saved", function(event) {
+
+        var reg = /(.*?)\.(jpg|jpeg|png|gif|bmp)$/;
+
+        if(event.file.pathName.match(reg)) {
+
+            socket.emit('file', event.file.pathName);
+
+        } else {
+
+            console.log('nan')
+
+        }
+
+    });
+
+
+
+    uploader.on("error", function(event) {
+        console.log("Error from uploader", event);
+    });
+
     socket.on('chat', (msg, userName) => {
         user.push(userName);
 
         io.emit('user', user);
 
         if (msg !== '') {
-            io.emit('chat', userName+": "+msg, userName);
+            if (userName.length <= 7) {
+                io.emit('chat', userName+": "+msg, userName);
+            }
         }
     });
     socket.on('disconnect', () => {
@@ -50,6 +86,8 @@ io.on('connection', (socket) => {
         io.emit('count', c);
 
     });
+
+    
   });
 
 server.listen(port);
